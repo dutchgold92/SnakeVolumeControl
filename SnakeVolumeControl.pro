@@ -16,13 +16,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     snake.cpp \
     snake_controller.cpp \
-    volume_controller.cpp
+    volume_controller.cpp \
+    snake_view.cpp
 
 HEADERS  += mainwindow.h \
     snake.h \
     utils.h \
     snake_controller.h \
-    volume_controller.h
+    volume_controller.h \
+    snake_view.h
 
 FORMS    += mainwindow.ui
 

@@ -4,7 +4,7 @@ using namespace SnakeVolumeControl;
 
 class PulseAudioSystemVolumeControlAdapter : public SystemVolumeControlAdapter {
 public:
-    void setVolume(unsigned int percentage) {
+    void setVolume(unsigned int percentage) override {
         std::string cmd = "amixer -D pulse sset Master ";
         cmd += std::to_string(percentage);
         cmd += "%";
@@ -14,7 +14,7 @@ public:
         cmdProcess.waitForFinished(-1);
     }
 
-    bool isApplicable() {
+    bool isApplicable() override {
 //        QProcess checkAmixerCmdProcess;
 //        checkAmixerCmdProcess.start(QString("amixer"), QStringList() << "--version");
 //        checkAmixerCmdProcess.waitForFinished(-1);

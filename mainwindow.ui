@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Serpentine</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -36,10 +36,17 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QPushButton" name="resetButton">
+          <property name="text">
+           <string>Reset</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
-       <widget class="QGraphicsView" name="snakeView">
+       <widget class="SnakeView" name="snakeView">
         <property name="autoFillBackground">
          <bool>false</bool>
         </property>
@@ -140,6 +147,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>SnakeView</class>
+   <extends>QGraphicsView</extends>
+   <header>snake_view.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

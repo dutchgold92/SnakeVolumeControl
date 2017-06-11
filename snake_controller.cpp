@@ -1,6 +1,6 @@
 #include "snake_controller.h"
 
-SnakeController::SnakeController(Snake *snake, int xBoundary, int yBoundary) : isAlive(true), isPaused(false), xBoundary(xBoundary), yBoundary(yBoundary) {
+SnakeController::SnakeController(Snake *snake, int xBoundary, int yBoundary) : alive(true), isPaused(false), xBoundary(xBoundary), yBoundary(yBoundary) {
     try {
         this->volumeController = SnakeVolumeControl::getVolumeControlAdapter();
     } catch (SnakeVolumeControl::VolumeControlAdapterNotAvailableException ex) {
@@ -25,7 +25,7 @@ int SnakeController::getYBoundary() {
 }
 
 void SnakeController::advance(Snake *snake) {
-    while (isAlive) {
+    while (this->alive) {
         if (!this->isPaused) {
             snake->advance();
             emit(snakeAdvanced(snake, this->foodCoords));
@@ -52,11 +52,15 @@ void SnakeController::advance(Snake *snake) {
 }
 
 void SnakeController::stop() {
-    this->isAlive = false;
+    this->alive = false;
 }
 
-void SnakeController::togglePause() {
-    this->isPaused = !this->isPaused;
+bool SnakeController::togglePause() {
+    return (this->isPaused = !this->isPaused);
+}
+
+bool SnakeController::isAlive() {
+    return this->alive;
 }
 
 bool SnakeController::isGameOver(Snake *snake) {
@@ -124,4 +128,8 @@ unsigned int SnakeController::getRandom(unsigned int limit) {
     // TODO: better
     srand(time(NULL));
     return (rand() % limit);
+}
+
+std::pair<int, int>* SnakeController::getFoodCoords() {
+    return this->foodCoords;
 }

@@ -15,7 +15,7 @@ namespace SnakeVolumeControl {
 class SnakeController : public QObject {
     Q_OBJECT
 private:
-    bool isAlive;
+    bool alive;
     bool isPaused;
     int xBoundary;
     int yBoundary;
@@ -32,7 +32,9 @@ public:
     int getYBoundary();
     void advance(Snake *snake);
     void stop();
-    void togglePause();
+    bool togglePause();
+    bool isAlive();
+    std::pair<int, int>* getFoodCoords();
 signals:
     void snakeAdvanced(Snake *snake, std::pair<int, int> *foodCoords);
     void gameOver();
