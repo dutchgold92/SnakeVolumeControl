@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "snake.h"
+#include "include/snake.h"
 
 void printSnake(Snake &snake, std::pair<int, int> size) {
     char grid[size.first][size.second];

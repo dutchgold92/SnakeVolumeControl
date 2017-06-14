@@ -38,23 +38,23 @@ Snake::Builder::Builder() {
 
 }
 
-Snake::Builder* Snake::Builder::setTailCoords(std::pair<int, int> tailCoords) {
+Snake::Builder* Snake::Builder::setTailCoords(const std::pair<int, int> tailCoords) {
     this->tailCoords = tailCoords;
     return this;
 }
 
-Snake::Builder* Snake::Builder::setLength(unsigned int length) {
+Snake::Builder* Snake::Builder::setLength(const unsigned int length) {
     this->length = length;
     return this;
 }
 
-Snake::Builder* Snake::Builder::setDirection(Direction direction) {
+Snake::Builder* Snake::Builder::setDirection(const Direction direction) {
     this->direction = direction;
     return this;
 }
 
 Snake* Snake::Builder::build() {
-    SnakeNode *tail = new SnakeNode(NULL, NULL, new std::pair<int, int>(this->tailCoords.first, this->tailCoords.second));
+    SnakeNode *tail = new SnakeNode(nullptr, nullptr, new std::pair<int, int>(this->tailCoords.first, this->tailCoords.second));
 
     SnakeNode *prev = tail;
     std::pair<int, int> currentCoords = std::make_pair(this->tailCoords.first, this->tailCoords.second);
@@ -75,7 +75,7 @@ Snake* Snake::Builder::build() {
             break;
         }
 
-        SnakeNode *next = new SnakeNode(prev, NULL, new std::pair<int, int>(currentCoords));
+        SnakeNode *next = new SnakeNode(prev, nullptr, new std::pair<int, int>(currentCoords));
         prev->setNext(next);
         prev = next;
     }
@@ -86,7 +86,7 @@ Snake* Snake::Builder::build() {
 /*
  * Snake
  */
-Snake::Snake(SnakeNode *head, SnakeNode *tail, Direction direction) : isGrowing(false), size(0) {
+Snake::Snake(SnakeNode *head, SnakeNode *tail, const Direction direction) : isGrowing(false), size(0) {
     this->head = head;
     this->tail = tail;
     this->direction = direction;
@@ -95,7 +95,6 @@ Snake::Snake(SnakeNode *head, SnakeNode *tail, Direction direction) : isGrowing(
 
     while (node) {
         this->size++;
-
         node = node->getPrev();
     }
 }
@@ -129,14 +128,14 @@ void Snake::advance() {
         break;
     }
 
-    SnakeNode *newHead = new SnakeNode(this->head, NULL, newHeadCoords);
+    SnakeNode *newHead = new SnakeNode(this->head, nullptr, newHeadCoords);
     this->head->setNext(newHead);
     this->head = newHead;
 
     if (!this->isGrowing) {
         SnakeNode *oldTail = this->tail;
         this->tail = oldTail->getNext();
-        this->tail->setPrev(NULL);
+        this->tail->setPrev(nullptr);
         delete oldTail;
     } else {
         this->isGrowing = false;

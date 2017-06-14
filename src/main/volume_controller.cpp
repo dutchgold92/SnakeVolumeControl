@@ -23,14 +23,14 @@ public:
 };
 
 namespace SnakeVolumeControl {
-    SystemVolumeControlAdapter* getVolumeControlAdapter() throw (VolumeControlAdapterNotAvailableException) {
-        SystemVolumeControlAdapter *result = new PulseAudioSystemVolumeControlAdapter();
+SystemVolumeControlAdapter* getVolumeControlAdapter() throw (VolumeControlAdapterNotAvailableException) {
+    SystemVolumeControlAdapter *result = new PulseAudioSystemVolumeControlAdapter();
 
-        if (result->isApplicable()) {
-            return result;
-        } else {
-            delete result;
-            throw VolumeControlAdapterNotAvailableException();
-        }
+    if (result->isApplicable()) {
+        return result;
+    } else {
+        delete result;
+        throw VolumeControlAdapterNotAvailableException();
     }
+}
 }

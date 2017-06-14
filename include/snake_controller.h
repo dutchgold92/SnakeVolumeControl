@@ -6,11 +6,12 @@
 #include <QProcess>
 #include <QThread>
 
-#include "snake.h"
-#include "volume_controller.h"
+#include "include/config.h"
+#include "include/snake.h"
+#include "include/volume_controller.h"
 
 namespace SnakeVolumeControl {
-    class SnakeController;
+class SnakeController;
 }
 
 class SnakeController : public QObject {
@@ -20,14 +21,14 @@ private:
     bool isPaused;
     int xBoundary;
     int yBoundary;
-    std::pair<int, int> *foodCoords;
+    std::pair<int, int> foodCoords;
     SnakeVolumeControl::SystemVolumeControlAdapter *volumeController;
     bool isGameOver(Snake *snake);
     void throwFood(Snake *snake);
     std::vector<std::pair<int, int> > findCoordsOccupiedBySnake(Snake *snake);
     unsigned int getRandom(unsigned int limit);
 public:
-    SnakeController(Snake *snake, int xBoundary, int yBoundary);
+    SnakeController(Snake *snake, const int xBoundary, const int yBoundary);
     ~SnakeController();
     int getXBoundary();
     int getYBoundary();

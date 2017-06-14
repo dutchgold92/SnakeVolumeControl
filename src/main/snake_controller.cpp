@@ -1,11 +1,11 @@
 #include "include/snake_controller.h"
 
-SnakeController::SnakeController(Snake *snake, int xBoundary, int yBoundary) : alive(true), isPaused(false), xBoundary(xBoundary), yBoundary(yBoundary) {
+SnakeController::SnakeController(Snake *snake, const int xBoundary, const int yBoundary) : alive(true), isPaused(false), xBoundary(xBoundary), yBoundary(yBoundary) {
     try {
         this->volumeController = SnakeVolumeControl::getVolumeControlAdapter();
     } catch (SnakeVolumeControl::VolumeControlAdapterNotAvailableException ex) {
         std::cerr << "ERROR: " << ex.what() << std::endl;
-        this->volumeController = NULL;
+        this->volumeController = nullptr;
     }
 
     this->throwFood(snake);
@@ -13,7 +13,6 @@ SnakeController::SnakeController(Snake *snake, int xBoundary, int yBoundary) : a
 
 SnakeController::~SnakeController() {
     delete this->volumeController;
-    delete this->foodCoords;
 }
 
 int SnakeController::getXBoundary() {
@@ -28,25 +27,25 @@ void SnakeController::advance(Snake *snake) {
     while (this->alive) {
         if (!this->isPaused) {
             snake->advance();
-            emit(snakeAdvanced(snake, this->foodCoords));
+            emit(snakeAdvanced(snake, &this->foodCoords));
 
             if (isGameOver(snake)) {
                 emit(gameOver());
                 stop();
             } else {
-                if (*snake->getHead()->getCoords() == *this->foodCoords) {
+                if (*snake->getHead()->getCoords() == this->foodCoords) {
                     snake->grow();
                     throwFood(snake);
                 }
 
                 if (this->volumeController) {
-                    this->volumeController->setVolume(std::min(((uint) 100), snake->getSize()));
+                     this->volumeController->setVolume(std::min(((uint) 100), snake->getSize()));
                 }
 
-                QThread::msleep(100);
+                QThread::msleep(CONFIG_FRAME_DELAY_MS);
             }
         } else {
-            QThread::msleep(100);
+            QThread::msleep(CONFIG_FRAME_DELAY_MS);
         }
     }
 }
@@ -64,8 +63,9 @@ bool SnakeController::isAlive() {
 }
 
 bool SnakeController::isGameOver(Snake *snake) {
-    int xIdx = snake->getHead()->getCoords()->first;
-    int yIdx = snake->getHead()->getCoords()->second;
+    const auto snakeHeadCoords = snake->getHead()->getCoords();
+    const int xIdx = snakeHeadCoords->first;
+    const int yIdx = snakeHeadCoords->second;
 
     if ((xIdx < 0) || (xIdx >= this->xBoundary) || (yIdx < 0) || (yIdx >= this->yBoundary)) {
         return true;
@@ -85,39 +85,38 @@ bool SnakeController::isGameOver(Snake *snake) {
 }
 
 void SnakeController::throwFood(Snake *snake) {
-    std::vector<std::pair<int, int> > occupiedCoords = findCoordsOccupiedBySnake(snake);
-    std::vector<std::pair<int, int> > unoccupiedCoords = std::vector<std::pair<int, int> >();
+    std::vector<std::pair<int, int> > occupiedCoordsVector = findCoordsOccupiedBySnake(snake);
+    auto unoccupiedCoordsVector = std::vector<std::pair<int, int> >();
 
     for (int i = 0; i < this->xBoundary; i++) {
         for (int j = 0; j < this->yBoundary; j++) {
-            unoccupiedCoords.push_back(std::make_pair(i, j));
+            unoccupiedCoordsVector.push_back(std::make_pair(i, j));
         }
     }
 
-    for (std::vector<std::pair<int, int> >::const_iterator occupiedIterator = occupiedCoords.begin(); occupiedIterator != occupiedCoords.end(); occupiedIterator++) {
+    for (auto occupiedIterator = occupiedCoordsVector.begin(); occupiedIterator != occupiedCoordsVector.end(); occupiedIterator++) {
         std::pair<int, int> occupiedCoordsValue = *occupiedIterator;
 
-        for (std::vector<std::pair<int, int> >::iterator unoccupiedIterator = unoccupiedCoords.begin(); unoccupiedIterator != unoccupiedCoords.end(); unoccupiedIterator++) {
+        for (auto unoccupiedIterator = unoccupiedCoordsVector.begin(); unoccupiedIterator != unoccupiedCoordsVector.end(); unoccupiedIterator++) {
             std::pair<int, int> unoccupiedCoordsValue = *unoccupiedIterator;
 
             if (occupiedCoordsValue.first == unoccupiedCoordsValue.first && occupiedCoordsValue.second == unoccupiedCoordsValue.second) {
-                unoccupiedCoords.erase(unoccupiedIterator);
+                unoccupiedCoordsVector.erase(unoccupiedIterator);
                 break;
             }
         }
     }
 
-    this->foodCoords = new std::pair<int, int>(unoccupiedCoords[getRandom(unoccupiedCoords.size())]);
+    this->foodCoords = std::pair<int, int>(unoccupiedCoordsVector[getRandom(unoccupiedCoordsVector.size())]);
 }
 
 std::vector<std::pair<int, int> > SnakeController::findCoordsOccupiedBySnake(Snake *snake) {
-    std::vector<std::pair<int, int> > occupiedCoords = std::vector<std::pair<int, int> >();
+    auto occupiedCoords = std::vector<std::pair<int, int> >();
 
     Snake::SnakeNode *node = snake->getTail();
 
     while (node) {
         occupiedCoords.push_back(*node->getCoords());
-
         node = node->getNext();
     }
 
@@ -125,10 +124,10 @@ std::vector<std::pair<int, int> > SnakeController::findCoordsOccupiedBySnake(Sna
 }
 
 unsigned int SnakeController::getRandom(unsigned int limit) {
-    srand(time(NULL));
+    srand(time(nullptr));
     return (rand() % limit);
 }
 
 std::pair<int, int>* SnakeController::getFoodCoords() {
-    return this->foodCoords;
+    return &this->foodCoords;
 }

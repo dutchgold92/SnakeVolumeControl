@@ -6,8 +6,9 @@
 #include <QMainWindow>
 #include <QThread>
 
-#include "snake.h"
-#include "snake_controller.h"
+#include "include/config.h"
+#include "include/snake.h"
+#include "include/snake_controller.h"
 
 #define LABEL_PAUSE_BUTTON_PAUSE "Pause"
 #define LABEL_PAUSE_BUTTON_RESUME "Resume"

@@ -26,8 +26,9 @@ void MainWindow::initSnakeView() {
 }
 
 void MainWindow::initSnakeController() {
-    this->snake = Snake::Builder().setTailCoords(std::make_pair(10, 10))->setDirection(Snake::right)->setLength(1)->build();
-    this->snakeController = new SnakeController(snake, 20, 20);
+    this->snake = Snake::Builder().setTailCoords(std::make_pair(CONFIG_SNAKE_STARTING_TAIL_COORDS))->setDirection(CONFIG_SNAKE_STARTING_DIRECTION)
+                                  ->setLength(CONFIG_SNAKE_STARTING_SIZE)->build();
+    this->snakeController = new SnakeController(snake, CONFIG_X_BOUNDARY, CONFIG_Y_BOUNDARY);
 
     connect(snakeController, SIGNAL(snakeAdvanced(Snake*, std::pair<int, int>*)), this, SLOT(drawSnakeView(Snake*, std::pair<int, int>*)), Qt::QueuedConnection);
     connect(snakeController, SIGNAL(snakeAdvanced(Snake*, std::pair<int, int>*)), this, SLOT(setVolumeDisplay(Snake*)), Qt::QueuedConnection);
@@ -44,15 +45,19 @@ void MainWindow::drawSnakeView(Snake *snake, std::pair<int, int> *foodCoords) {
     Snake::SnakeNode *node = snake->getTail();
 
     while (node) {
-        int x = node->getCoords()->first;
-        int y = node->getCoords()->second;
+        const int x = node->getCoords()->first;
+        const int y = node->getCoords()->second;
 
-        ui->snakeView->scene()->addRect(offsetByViewSizeX(x, this->snakeController->getXBoundary()), offsetByViewSizeY(y, this->snakeController->getYBoundary()), scaleToViewSizeX(this->snakeController->getXBoundary()), scaleToViewSizeY(this->snakeController->getYBoundary()), QPen(Qt::white), QBrush(Qt::white, Qt::SolidPattern));
+        ui->snakeView->scene()->addRect(offsetByViewSizeX(x, this->snakeController->getXBoundary()), offsetByViewSizeY(y, this->snakeController->getYBoundary()),
+                                        scaleToViewSizeX(this->snakeController->getXBoundary()), scaleToViewSizeY(this->snakeController->getYBoundary()),
+                                        QPen(Qt::white), QBrush(Qt::white, Qt::SolidPattern));
 
         node = node->getNext();
     }
 
-    ui->snakeView->scene()->addEllipse(offsetByViewSizeX(foodCoords->first, this->snakeController->getXBoundary()), offsetByViewSizeY(foodCoords->second, this->snakeController->getYBoundary()), scaleToViewSizeX(this->snakeController->getXBoundary()), scaleToViewSizeY(this->snakeController->getYBoundary()), QPen(Qt::cyan), QBrush(Qt::cyan, Qt::SolidPattern));
+    ui->snakeView->scene()->addEllipse(offsetByViewSizeX(foodCoords->first, this->snakeController->getXBoundary()), offsetByViewSizeY(foodCoords->second,
+                                       this->snakeController->getYBoundary()), scaleToViewSizeX(this->snakeController->getXBoundary()),
+                                       scaleToViewSizeY(this->snakeController->getYBoundary()), QPen(Qt::cyan), QBrush(Qt::cyan, Qt::SolidPattern));
 }
 
 void MainWindow::endGame() {

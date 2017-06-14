@@ -1,12 +1,11 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-//#include <cstddef>
 #include <iostream>
 #include <utility>
 
 namespace SnakeVolumeControl {
-    class Snake;
+class Snake;
 }
 
 class Snake {
@@ -35,9 +34,9 @@ public:
         Direction direction;
     public:
         Builder();
-        Builder* setTailCoords(std::pair<int, int> tailCoords);
-        Builder* setLength(unsigned int length);
-        Builder* setDirection(Direction direction);
+        Builder* setTailCoords(const std::pair<int, int> tailCoords);
+        Builder* setLength(const unsigned int length);
+        Builder* setDirection(const Direction direction);
         Snake *build();
     };
 private:
@@ -48,7 +47,7 @@ private:
     bool isGrowing;
     unsigned int size;
 public:
-    Snake(SnakeNode *head, SnakeNode *tail, Direction direction);
+    Snake(SnakeNode *head, SnakeNode *tail, const Direction direction);
     ~Snake();
     void advance();
     void grow();

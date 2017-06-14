@@ -28,7 +28,8 @@ HEADERS  += include/mainwindow.h \
     include/utils.h \
     include/snake_controller.h \
     include/volume_controller.h \
-    include/snake_view.h
+    include/snake_view.h \
+    include/config.h
 
 FORMS    += resources/ui/forms/mainwindow.ui
 
